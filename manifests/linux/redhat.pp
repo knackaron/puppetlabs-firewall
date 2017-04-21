@@ -41,18 +41,6 @@ class firewall::linux::redhat (
     }
   }
 
-  if ($::operatingsystem != 'Amazon')
-    and (($::operatingsystem != 'Fedora' and versioncmp($::operatingsystemrelease, '7.0') >= 0)
-    or  ($::operatingsystem == 'Fedora' and versioncmp($::operatingsystemrelease, '15') >= 0)) {
-    if $ensure == 'running' {
-      exec { '/usr/bin/systemctl daemon-reload':
-        require => Package[$package_name],
-        before  => Service[$service_name, $service_name_v6],
-        unless  => "/usr/bin/systemctl is-active ${service_name} ${service_name_v6}",
-      }
-    }
-  }
-
   service { $service_name:
     ensure    => $ensure,
     enable    => $enable,
